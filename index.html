@@ -1,0 +1,634 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>From Foundation Models to Autonomous Systems</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reset.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,400;0,700;1,400&family=Roboto+Mono&display=swap');
+
+			:root {
+				--r-main-font: 'Exo 2', sans-serif;
+				--r-code-font: 'Roboto Mono', monospace;
+				--r-background-color: #0d1117;
+				--r-heading-color: #00d1ff;
+				--r-main-color: #f0f6fc;
+				--r-link-color: #ff9933;
+				--r-link-color-hover: #ffad5c;
+
+				--s1-color: #00d1ff; /* Cyan */
+				--s2-color: #39ff14; /* Green */
+				--s3-color: #ff9933; /* Orange */
+				--s4-color: #ff00ff; /* Magenta */
+				--s5-color: #f0f6fc; /* White */
+			}
+
+			.reveal {
+				font-size: 26px;
+				--grid-color: rgba(0, 209, 255, 0.1);
+				background-color: var(--r-background-color);
+				background-image:
+					linear-gradient(var(--grid-color) 1px, transparent 1px),
+					linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+				background-size: 50px 50px;
+			}
+
+			.reveal h1 { font-size: 2.5em; }
+			.reveal h2 { font-size: 1.8em; }
+			.reveal h3 { font-size: 1.5em; }
+			.reveal h4 { font-size: 1.2em; }
+
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+				text-shadow: 0 0 2px currentColor, 0 0 8px currentColor;
+			}
+
+			.reveal section img {
+				border-radius: 8px;
+				border: 2px solid rgba(255, 255, 255, 0.2);
+				box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+			}
+
+			.reveal .slide-content {
+				display: flex;
+				align-items: center;
+				gap: 30px;
+			}
+
+			.reveal .slide-content .text-content {
+				flex: 1;
+				text-align: left;
+			}
+
+			.reveal .slide-content .visual-content {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.reveal .caption {
+				font-size: 0.7em;
+				font-style: italic;
+				color: #ccc;
+				text-align: center;
+				margin-top: 15px;
+			}
+
+			.reveal ul {
+				list-style-type: none;
+			}
+
+			.reveal ul li {
+				background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2300d1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>') no-repeat left center;
+				padding-left: 30px;
+				margin-bottom: 15px;
+			}
+
+			/* Section-specific colors */
+			.s1 { --grid-color: rgba(0, 209, 255, 0.1); }
+			.s1 h1, .s1 h2, .s1 h3, .s1 h4 { color: var(--s1-color); }
+			.s1 ul li { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2300d1ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
+			.s1 section img { border-color: var(--s1-color); box-shadow: 0 0 10px var(--s1-color); }
+
+			.s2 { --grid-color: rgba(57, 255, 20, 0.1); }
+			.s2 h1, .s2 h2, .s2 h3, .s2 h4 { color: var(--s2-color); }
+			.s2 ul li { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%2339ff14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
+			.s2 section img { border-color: var(--s2-color); box-shadow: 0 0 10px var(--s2-color); }
+
+			.s3 { --grid-color: rgba(255, 153, 51, 0.1); }
+			.s3 h1, .s3 h2, .s3 h3, .s3 h4 { color: var(--s3-color); }
+			.s3 ul li { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ff9933" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
+			.s3 section img { border-color: var(--s3-color); box-shadow: 0 0 10px var(--s3-color); }
+
+			.s4 { --grid-color: rgba(255, 0, 255, 0.1); }
+			.s4 h1, .s4 h2, .s4 h3, .s4 h4 { color: var(--s4-color); }
+			.s4 ul li { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23ff00ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
+			.s4 section img { border-color: var(--s4-color); box-shadow: 0 0 10px var(--s4-color); }
+
+			.s5 { --grid-color: rgba(240, 246, 252, 0.1); }
+			.s5 h1, .s5 h2, .s5 h3, .s5 h4 { color: var(--s5-color); }
+			.s5 ul li { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23f0f6fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
+			.s5 section img { border-color: var(--s5-color); box-shadow: 0 0 10px var(--s5-color); }
+
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<!-- Section 1: The Evolutionary Leap -->
+				<section class="s1">
+					<section>
+						<h2>From Foundation Models</h2>
+						<h2>to Autonomous Systems</h2>
+						<h4 style="margin-top: 40px;">Prashanth Subrahmanyam</h4>
+						<p>APAC Lead, Developer Adoption, Google Cloud</p>
+						<p>X: @ksprashu | Linkedin: in/ksprashu</p>
+						<aside class="notes">
+							(Use this time while people are settling in). "Good morning everyone, and welcome. We'll get started in just a moment."
+						</aside>
+					</section>
+					<section id="slide-1a">
+						<h3>The Rise of AI Agents: A Paradigm Shift</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>A New Evolution:</strong> AI is moving beyond simple, reactive chatbots to sophisticated, proactive <strong>AI agents</strong>.</li>
+									<li class="fragment"><strong>Massive Enterprise Adoption:</strong> 82% of executives plan to integrate AI agents within 3 years. (Source: Capgemini)</li>
+									<li class="fragment"><strong>The Next Frontier:</strong> The evolution continues with <strong>multi-agent systems</strong>, where teams of specialized agents collaborate to solve complex problems.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide1a.png" alt="Paradigm Shift Visualization">
+								<p class="caption">The era of AI Agents is here, fundamentally changing how we build applications.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Before we dive deep, let's set the stage. We are witnessing a fundamental paradigm shift. For years, we've interacted with AI through chatbots. But that's changing. We're moving into the era of AI Agents. This isn't just a concept; it's a reality backed by massive enterprise adoption. A recent Capgemini study shows 82% of executives are already planning to integrate agents. This sets the stage for our discussion today: how did we get here, and how can you build these autonomous systems?"
+						</aside>
+					</section>
+					<section>
+						<h3>The Evolution of LLM Capabilities</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>1. Prediction:</strong> `Sentence Completion`</li>
+									<li class="fragment"><strong>2. Instruction:</strong> `Understand User Request`</li>
+									<li class="fragment"><strong>3. Interaction:</strong> `Structured Output & Function Calling`</li>
+									<li class="fragment"><strong>4. Autonomy:</strong> `Reasoning & Agentic Loops`</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide02.png" alt="Evolution of LLM Capabilities Timeline">
+								<p class="caption">The journey to agents was a step-by-step evolution of model capabilities.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"So, now that we've established *that* we're in the age of agents, the natural question is *how* did we get here so fast? It wasn't a single overnight event. The journey to today's agents was a rapid, step-by-step evolution of the underlying model capabilities. We're going to walk through the four key stages of that evolution: from simple Prediction, to Instruction-following, to structured Interaction, and finally, to the Agentic Loops that enable true Autonomy."
+						</aside>
+					</section>
+					<section>
+						<h3>From Prediction to Instruction</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>The Problem:</strong> Early models (e.g., GPT-3) were powerful "stochastic parrots," trained only for text completion.</li>
+									<li class="fragment"><strong>The Breakthrough:</strong> Instruction Tuning & RLHF aligned models with user intent.</li>
+									<li class="fragment"><strong>The Result:</strong> A smaller, aligned model (InstructGPT) was vastly more useful.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide03.png" alt="Parrot to Assistant Animation">
+								<p class="caption">The first leap was teaching models to be helpful by following instructions.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Start at the beginning: early models like GPT-3 (2020) were trained simply to predict the next word. This made them powerful, but not inherently helpful. Reference the term "Stochastic Parrots." The breakthrough was the "Alignment Revolution" - using techniques like RLHF to teach models our intent. This is how we transformed a simple predictor into a helpful assistant."
+						</aside>
+					</section>
+					<section>
+						<h3>The Complexity Ceiling</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">Single commands are powerful, but have limits.</li>
+									<li class="fragment">What happens when a task requires multiple steps or external data?</li>
+									<li class="fragment">Example: "Fix a bug in my codebase" requires seeing files, running tests, and verifying the fix.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide04.png" alt="Complexity Ceiling Diagram">
+								<p class="caption">Instruction-following is powerful, but fails when tasks require strategy, iteration, and real-world interaction.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"This new ability to follow instructions unlocked incredible creativity. But it has limits. We all hit what I call the "Complexity Ceiling." Use the developer example: "fix a bug in my codebase." The model can't see files, run tests, or verify its fix. It hits a wall because it can't **act** or **iterate**."
+						</aside>
+					</section>
+					<section>
+						<h3>The Agentic Leap</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">From Passive Tools to Active Systems.</li>
+									<li class="fragment">This requires a <strong>runtime</strong> to manage a continuous loop:</li>
+									<li class="fragment"><strong>Plan -> Act -> Observe -> Repeat.</strong></li>
+									<li class="fragment">This loop is the core of an <strong>Agentic System</strong>.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide05.png" alt="Agentic Loop Animation">
+								<p class="caption">To break the ceiling, we must move from passive tools to active, autonomous systems.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"To break the ceiling, we need a paradigm shift - what I call the 'Agentic Leap.' We move from passive, one-shot tools to active, looping systems. Crucially, this loop requires an application—a runtime—to manage the cycle. The runtime executes the 'Act' step, captures the 'Observation', and feeds it back to the model. This is the fundamental difference from a single API call."
+						</aside>
+					</section>
+				</section>
+
+				<!-- Section 2: Anatomy of an Autonomous Agent -->
+				<section class="s2">
+					<section>
+						<h2>Anatomy of an Autonomous Agent</h2>
+					</section>
+					<section>
+						<h3>The Anatomy of an Agent</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li><strong>Goal:</strong> "I want to visit the home of India's missile man on his birthday."</li>
+									<li class="fragment"><strong>Requires:</strong>
+										<ul style="margin-top: 15px;">
+											<li class="fragment"><strong>Reasoning:</strong> Who is he? Where did he live?</li>
+											<li class="fragment"><strong>Tools:</strong> Web Search, Flight Search API.</li>
+											<li class="fragment"><strong>Memory:</strong> To connect the steps.</li>
+											<li class="fragment"><strong>Planning:</strong> To orchestrate the process.</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide06.png" alt="Agent Architecture Diagram">
+								<p class="caption">An agent is more than an LLM; it's a system that gives the LLM three key capabilities.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"So what is an agent? It's a system we build around an LLM to solve goals that are impossible for a simple prompt. Let's use a much more interesting goal. A user says, **'I want to visit the home of India's missile man on his birthday.'** Think about what's needed: The agent has to figure out *who* that is, *where* they lived, *when* their birthday is, find travel options, and then *act* on them. This requires all the core components: a Planner, Tools, Memory, and the LLM core."
+						</aside>
+					</section>
+					<section>
+						<h3>The LLM Core: The Engine of Reason</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li><strong>Input:</strong> "visit India's missile man"</li>
+									<li class="fragment"><strong>Reasoning:</strong>
+										<ul style="margin-top: 15px;">
+											<li class="fragment">`"missile man"` -> `Dr. APJ Abdul Kalam`</li>
+											<li class="fragment">`"visit home"` -> `Travel to Rameswaram`</li>
+											<li class="fragment">`"on his birthday"` -> `October 15th`</li>
+										</ul>
+									</li>
+									<li class="fragment"><strong>Plan:</strong> Decomposes the goal into sub-tasks.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide07.png" alt="LLM Core Logos">
+								<p class="caption">The LLM is the reasoning engine, but it's not the entire agent.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"The LLM is the reasoning engine. For our goal, its first job is to understand the user's fuzzy, high-level intent. It has to **reason** that 'India's missile man' is a specific person (Dr. APJ Abdul Kalam) and that 'visit his home' means traveling to his hometown (Rameswaram). It also reasons that this is a multi-step problem: Identify Person -> Find City & Birthday -> Search Travel -> Present Options."
+						</aside>
+					</section>
+					<section>
+						<h3>Tools: The Agent's Hands</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li>An agent acts on the world using a toolkit.</li>
+									<li class="fragment"><strong>Tool 1: `web_search`</strong>
+										<ul style="margin-top: 15px;">
+											<li>`web_search("hometown of Dr. APJ Abdul Kalam")` -> Returns `Rameswaram`</li>
+										</ul>
+									</li>
+									<li class="fragment"><strong>Tool 2: `flight_api`</strong>
+										<ul style="margin-top: 15px;">
+											<li>`flight_api.search(destination="Rameswaram", date="10-15")`</li>
+										</ul>
+									</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide08.png" alt="Tool Icons with JSON tag">
+								<p class="caption">Tools, enabled by structured outputs and function calling, give an agent the ability to act.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Tools give the agent hands. To execute the plan, the LLM needs a toolkit. For our goal, it would need: First, a `web_search` tool to identify the person, their hometown, and their date of birth. Second, an `expedia_api` or `google_flights` tool to search for flights and trains. And maybe even a `calendar` tool to create an event for the user. Function Calling is the technical mechanism that lets the LLM select and use these tools with the right parameters."
+						</aside>
+					</section>
+					<section>
+						<h3>Memory: The Agent's Notebook</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li>Memory connects the steps of the plan.</li>
+									<li class="fragment"><strong>Step 1:</strong> `web_search` result -> `city: Rameswaram`</li>
+									<li class="fragment"><strong>Memory ("Scratchpad"):</strong> Store `city = "Rameswaram"`.</li>
+									<li class="fragment"><strong>Step 2:</strong> Use `city` from memory as the `destination` for the `flight_api` tool.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide09.png" alt="Memory Diagram">
+								<p class="caption">Memory gives an agent context and the ability to learn from its actions.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Memory is crucial for connecting the steps. The agent can't be stateless. After the `web_search` tool finds the birthday is **October 15th** and the city is **Rameswaram**, the agent must store these facts in its **Short-Term Memory** or 'scratchpad'. It then uses 'Rameswaram' and 'October 15th' from its memory as the inputs for the `flight_search` tool in the next step. Without memory, the chain of actions breaks."
+						</aside>
+					</section>
+					<section>
+						<h3>Planning: The Agent's Strategist</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li>The Planner orchestrates the agentic loop:</li>
+									<li class="fragment"><strong>Reason:</strong> I need to find out who the "missile man" is and where he lived.</li>
+									<li class="fragment"><strong>Act:</strong> `web_search(...)`</li>
+									<li class="fragment"><strong>Observe:</strong> Get "Rameswaram". Store in Memory.</li>
+									<li class="fragment"><strong>Reason:</strong> Now I need to find flights to the city I just found.</li>
+									<li class="fragment"><strong>Act:</strong> `flight_api.search(destination="Rameswaram", ...)`</li>
+									<li class="fragment">...this loop repeats until the goal is complete.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide10.png" alt="Planning Flowchart">
+								<p class="caption">The planner orchestrates all other components to tackle complex, multi-step goals.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Finally, the planner is the orchestrator that runs the whole show, managing the agentic loop. It starts with the goal: **Reason** (I need the city) -> **Act** (use search) -> **Observe** (get Rameswaram, save to memory). Then it loops again: **Reason** (Now I need flights for the date I found) -> **Act** (use flight search with city and date from memory) -> **Observe** (get flight options). It continues this cycle until the user's entire high-level goal is completed. This is the core of autonomy."
+						</aside>
+					</section>
+				</section>
+
+				<!-- Section 3: Agentic Reasoning Patterns -->
+				<section class="s3">
+					<section>
+						<h2>Agentic Reasoning Patterns</h2>
+					</section>
+					<section>
+						<h3>The Architecture of Reason</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">A story in three steps.</li>
+									<li class="fragment">These are not model features, but <strong>frameworks</strong> we apply to them.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide11.png" alt="Reasoning Evolution Timeline">
+								<p class="caption">To build effective agents, we apply architectural patterns that guide <em>how</em> a model thinks.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Now we get to the core of agentic design. It's not enough to have the components; we need an architecture for reasoning. It's important to note that these aren't features of the models themselves, but frameworks or patterns that we, as developers, apply to guide their thought process. This was an evolution in three key steps."
+						</aside>
+					</section>
+					<section>
+						<h3>Step 1: Chain of Thought (CoT)</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>Concept:</strong> Decomposes a complex problem into simpler, sequential steps.</li>
+									<li class="fragment"><strong>Benefit:</strong> Improves reasoning and provides interpretability.</li>
+									<li class="fragment"><strong>Limitation:</strong> Linear and greedy. An early mistake can't be corrected.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide12.png" alt="Chain of Thought Diagram">
+								<p class="caption">Prompting a model to "think step-by-step" dramatically improves its reasoning on complex tasks.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"The first breakthrough was Chain of Thought. Researchers found that by simply instructing a model to 'think step-by-step,' it could solve problems it previously failed at. It decomposes a complex task into a linear sequence of thoughts. This was huge, but it has a flaw: it's a one-way street. If it makes a mistake early on, it can't go back."
+						</aside>
+					</section>
+					<section>
+						<h3>Step 2: Tree of Thoughts (ToT)</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>Concept:</strong> Explores multiple reasoning paths at once, like a tree.</li>
+									<li class="fragment"><strong>Benefit:</strong> Can self-evaluate paths and backtrack from dead ends.</li>
+									<li class="fragment"><strong>Limitation:</strong> Still ungrounded. It's all happening inside the model's "imagination."</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide13.png" alt="Tree of Thoughts Diagram">
+								<p class="caption">The ToT framework enables agents to explore multiple reasoning paths and backtrack from mistakes.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"The next step was the Tree of Thoughts framework. This overcomes CoT's limitation by allowing the model to explore multiple reasoning paths at once. It can generate several different thoughts, evaluate which one seems most promising, and backtrack from dead ends. It's a much more robust problem-solver. But it's still just thinking—it has no connection to the real world."
+						</aside>
+					</section>
+					<section>
+						<h3>Step 3: ReAct (Reason + Act)</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>Reason:</strong> The model decides what to do.</li>
+									<li class="fragment"><strong>Act:</strong> The model uses a tool (e.g., an API call).</li>
+									<li class="fragment"><strong>Observe:</strong> The model gets feedback from the tool's result.</li>
+									<li class="fragment">This loop grounds reasoning in reality.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide14.png" alt="ReAct Loop Diagram">
+								<p class="caption">The ReAct framework grounds the agent's reasoning by interleaving thought with real-world actions and observations.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"This brings us to ReAct, a framework that synthesizes the previous ideas. It stands for Reason and Act. ReAct grounds the agent's internal monologue in reality. The agent operates in a tight loop: it first **reasons** about what it needs to do, then it **acts** by calling a tool, and then it **observes** the result of that action. This feedback loop allows it to verify its assumptions and dynamically adapt its plan."
+						</aside>
+					</section>
+					<section>
+						<h3>ReAct in Action</h3>
+						<div class="text-content" style="font-size: 0.7em;">
+							<p><strong>Goal:</strong> "I want to visit the home of India's missile man on his birthday."</p>
+							<p class="fragment"><strong>Thought 1:</strong> I need to find the person, city, and date. I'll use search.</p>
+							<p class="fragment"><strong>Action 1:</strong> `web_search("India's missile man hometown and birthday")` -> <strong>Obs 1:</strong> Returns "Dr. APJ Abdul Kalam", "Rameswaram", "October 15th".</p>
+							<p class="fragment"><strong>Thought 2:</strong> I have the destination and date. I need to find flights.</p>
+							<p class="fragment"><strong>Action 2:</strong> `flight_api.search(destination="Rameswaram", date="10-15")` -> <strong style="color: red;">Obs 2:</strong> Returns `[]` (No flights).</p>
+							<p class="fragment"><strong style="color: yellow;">Thought 3 (Re-planning):</strong> No flights are available on the 15th. I will try the day before, Oct 14th. This means the user will need a hotel. I'll add "find hotel" to my plan.</p>
+							<p class="fragment"><strong>Action 3:</strong> `flight_api.search(destination="Rameswaram", date="10-14")` -> <strong>Obs 3:</strong> Returns `[Flight UA-123, ...]`. </p>
+							<p class="fragment"><strong>Thought 4:</strong> I found a flight. Now I need to execute the new hotel step in my plan.</p>
+							<p class="fragment"><strong>Action 4:</strong> `hotel_api.search(location="Rameswaram", check_in="10-14")` -> <strong>Obs 4:</strong> Returns `[Hotel Taj, ...]`. </p>
+							<p class="fragment"><strong>Thought 5:</strong> I have a viable plan with a flight and hotel. I will present these options to the user.</p>
+						</div>
+						<aside class="notes">
+							"Let's trace this with our goal. The agent finds Kalam, Rameswaram, and Oct 15. It then tries to book a flight, but the tool returns no results. This is a critical moment. A simple system would fail. But the agent **observes** the failure and **re-plans**. Its inner monologue says: 'Okay, the 15th is out. Let me try the 14th. But wait - if the user arrives on the 14th, they'll need a hotel. I'll add 'find hotel' to my task list.' It then successfully finds a flight on the 14th and immediately executes the new step in its plan: searching for hotels. Finally, with a complete, viable plan (flight + hotel), it presents the options to the user. This ability to dynamically react to failure and modify the plan is what makes agents so powerful."
+						</aside>
+					</section>
+					<section>
+						<h3>Agentic Pattern: Reflection & Self-Correction</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">A powerful pattern for improving output quality.</li>
+									<li class="fragment"><strong>Generate:</strong> The agent produces an initial draft (e.g., code, a summary).</li>
+									<li class="fragment"><strong>Reflect:</strong> The agent is prompted to critique its own work for flaws.</li>
+									<li class="fragment"><strong>Refine:</strong> The agent improves the draft based on the critique.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide16.png" alt="Reflection/Self-Correction Animation">
+								<p class="caption">The most advanced agents can critique and improve their own work.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Beyond ReAct, we see powerful agentic design patterns emerge. One of the most important is Reflection. Here, an agent generates an initial output—like a block of code—and then it's prompted to critique its own work, find flaws, and then refine it. This self-correction loop dramatically improves the quality and reliability of the final output."
+						</aside>
+					</section>
+				</section>
+
+				<!-- Section 4: The Engineering Reality -->
+				<section class="s4">
+					<section>
+						<h2>The Engineering Reality</h2>
+					</section>
+					<section>
+						<h3>The Engineering Reality: The Toolkit</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>Google ADK:</strong> For building robust, scalable, and multi-agent systems.</li>
+									<li class="fragment"><strong>LangChain / LangGraph:</strong> A popular orchestration framework.</li>
+									<li class="fragment"><strong>LlamaIndex:</strong> A data framework for connecting LLMs to your data.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide17.png" alt="Framework Logos">
+								<p class="caption">You don't have to build agents from scratch; powerful frameworks provide the building blocks.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"So, how do we build the runtime loop and connect these components? You don't have to start from scratch. **Orchestration frameworks** like **LangChain** or the **Google ADK** provide the **Planner** and the core agent loop. **Data frameworks** like **LlamaIndex** are specialized for connecting to external data, forming the agent's long-term **Memory**. And frameworks like the multi-agent capabilities in the **ADK** help you build systems where multiple agents collaborate, which we'll touch on later."
+						</aside>
+					</section>
+					<section>
+						<h3>The Engineering Reality: Evaluation</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">Agent behavior is probabilistic, not deterministic.</li>
+									<li class="fragment">We must evaluate the <em>process</em>, not just the final answer.</li>
+									<li class="fragment"><strong>Observability & Tracing</strong> are critical for debugging.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide18.png" alt="Agent Trace Screenshot">
+								<p class="caption">Evaluating non-deterministic agents requires a focus on observability and tracing, not just pass/fail tests.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"How do we know if an agent is working correctly? Traditional software testing falls short. Because agents are non-deterministic, you can't just write a unit test. We have to shift our focus to evaluation and observability. We need to look at the entire reasoning trace to understand *why* an agent failed. Tools that provide this level of tracing are essential for debugging and building reliable agents."
+						</aside>
+					</section>
+					<section>
+						<h3>The Engineering Reality: Safety</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment"><strong>Constrain Tool Use:</strong> Limit permissions and scope for each tool.</li>
+									<li class="fragment"><strong>Implement Guardrails:</strong> Add rules to prevent harmful or unintended actions.</li>
+									<li class="fragment"><strong>Human-in-the-Loop (HITL):</strong> The most critical safety pattern for high-stakes tasks.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide19.png" alt="Human-in-the-Loop Diagram">
+								<p class="caption">For high-stakes actions, the safest agent is one that knows when to ask for help.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"Most importantly: safety. An autonomous agent with tools *must* have guardrails. In our travel example, the agent found a flight and a hotel. Should it book them automatically? Absolutely not. This is where the **Human-in-the-Loop** pattern is critical. Before any action that spends money or modifies a system, the agent must stop and ask for approval. It should present the plan—'I found a flight on the 14th and a hotel. Shall I proceed with booking?'—and wait for a 'yes'. This is non-negotiable for building trust."
+						</aside>
+					</section>
+				</section>
+
+				<!-- Section 5: The Next Frontier & Conclusion -->
+				<section class="s5">
+					<section>
+						<h2>The Next Frontier & Conclusion</h2>
+					</section>
+					<section>
+						<h3>The Frontier: A Team of Agents</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li>A "Trip Planner" supervisor agent could orchestrate a team of specialists:</li>
+									<li class="fragment"><strong>`Research_Agent`:</strong> Finds the person, city, and dates.</li>
+									<li class="fragment"><strong>`Travel_Agent`:</strong> Searches for flights and hotels.</li>
+									<li class="fragment"><strong>`Booking_Agent`:</strong> Interacts with APIs to make reservations (with HITL).</li>
+									<li class="fragment"><strong>`Calendar_Agent`:</strong> Adds the final itinerary to the user's calendar.</li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide20.png" alt="Multi-Agent System Diagram">
+								<p class="caption">The future isn't a single agent, but a team of specialized agents collaborating on a goal.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"So what's the ultimate evolution of this? Not one agent, but a team of specialized agents collaborating on a goal. Instead of one agent doing everything in our travel example, a 'Supervisor' could manage a team. It would first delegate the research to a `Research_Agent`. Once that's done, it passes the details to a `Travel_Agent`. After you approve the plan, it hands the task to a secure `Booking_Agent` to handle the payment. This is the future of agentic systems: specialized, collaborative, and highly capable."
+						</aside>
+					</section>
+					<section>
+						<h3>Your Blueprint for Building</h3>
+						<div class="slide-content">
+							<div class="text-content">
+								<ul>
+									<li class="fragment">1. <strong>Choose the Right Reasoning Architecture.</strong> (e.g., ReAct)</li>
+									<li class="fragment">2. <strong>Build a Well-Designed, Agent-Friendly Toolkit.</strong></li>
+									<li class="fragment">3. <strong>Engineer for Safety and Observability from Day One.</strong></li>
+								</ul>
+							</div>
+							<div class="visual-content">
+								<img src="img/slide21.png" alt="Blueprint Icons">
+								<p class="caption">This is your actionable blueprint for the agentic era.</p>
+							</div>
+						</div>
+						<aside class="notes">
+							"We've covered a lot, but I want to leave you with a simple, actionable blueprint. First, choose the right reasoning architecture for your task, starting with the ReAct loop. Second, remember that the most powerful way to guide your agent is by building a well-designed toolkit and environment for it. And third, engineer for safety and observability from day one. Build in tracing and human approval checkpoints. This is how we build agents that are not just powerful, but also reliable and trustworthy."
+						</aside>
+					</section>
+					<section>
+						<h3>Further Reading & Codelab</h3>
+						<p>Get hands-on with the Google ADK:</p>
+						<div style="display: flex; align-items: center; justify-content: center; gap: 50px; margin-top: 30px;">
+							<div class="visual-content">
+								<img src="img/adk-gcp-101.png" alt="Codelab QR Code" style="width: 300px; border-color: var(--s5-color); box-shadow: 0 0 10px var(--s5-color);">
+								<p class="caption">Get hands-on with the concepts from the talk.</p>
+							</div>
+							<p style="font-size: 1.5em;"><a href="https://goo.gle/adk-gcp-101" target="_blank">goo.gle/adk-gcp-101</a></p>
+						</div>
+						<aside class="notes">
+							"To get hands-on with the concepts we've discussed today, I highly recommend this codelab. It will walk you through building an agent with the Google Agent Development Kit. You can scan the QR code or use the short link to get started."
+						</aside>
+					</section>
+					<section>
+						<h2>Thank You</h2>
+						<h4 style="margin-top: 40px;">Prashanth Subrahmanyam</h4>
+						<p>X: @ksprashu | Linkedin: in/ksprashu</p>
+						<aside class="notes">
+							"This is an incredible time to be building. We are at the very beginning of the shift from passive models to active, autonomous systems. I hope this session has given you a clear mental model and some actionable principles to start building them yourself. Thank you."
+						</aside>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+		<script>
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ],
+				slideNumber: true,
+				navigationMode: 'linear',
+			});
+		</script>
+	</body>
+</html>
